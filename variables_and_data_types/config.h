@@ -30,6 +30,46 @@ extern "C" {
 #define PUMP_MIN_FLOW_RATE          0.5f // liters per minute
 #define PUMP_MAX_FLOW_RATE          5.0f // liters per minute
 
+// Default Auto/Manual Mode Behaviour
+#define DEFAULT_MOISTURE_MIN_PERCENT        35.0f
+#define DEFAULT_MOISTURE_MAX_PERCENT        65.0f
+#define DEFAULT_MAX_TEMPERATURE_C           55.0f
+#define DEFAULT_MAX_WATERING_DURATION_S     90
+#define DEFAULT_MANUAL_WATERING_DURATION_S  20
+
+typedef enum {
+    MODE_AUTO = 0,
+    MODE_MANUAL
+} system_mode_t;
+
+typedef struct {
+    float moisture_min_percent;
+    float moisture_max_percent;
+    float max_temperature_c;
+    uint16_t max_watering_duration_s;
+    uint16_t manual_watering_duration_s;
+    uint16_t pump_cooldown_s;
+    uint32_t sensor_read_interval_ms;
+} system_config_t;
+
+typedef struct {
+    system_mode_t mode;
+    float last_temperature_c;
+    float last_moisture_percent;
+    bool watering;
+    bool moisture_alert;
+    bool error_active;
+    bool pump_locked;
+    uint32_t pump_started_at_s;
+    uint32_t pump_locked_at_s;
+} system_state_t;
+
+extern system_config_t g_system_config;
+extern system_state_t g_system_state;
+
+void system_config_init(system_config_t *config);
+void system_state_init(system_state_t *state, system_mode_t default_mode);
+
 #ifdef __cplusplus
 }
 #endif

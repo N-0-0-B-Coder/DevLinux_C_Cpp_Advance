@@ -5,6 +5,9 @@ static const char *TAG = "INIT_MODE";
 int init_system(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_sensor, pump_t *pump) {
     LOG_I(TAG, "System initializing...");
 
+    system_config_init(&g_system_config);
+    system_state_init(&g_system_state, MODE_AUTO);
+
     // Initialize GPIOs for LEDs
     if (led_init(LED_GREEN_PIN) != LED_ERROR_NONE) goto error;
     if (led_init(LED_YELLOW_PIN) != LED_ERROR_NONE) goto error;
