@@ -3,24 +3,16 @@
 static const char *TAG = "AUTO_MODE";
 
 static void delay_ms(uint32_t ms) {
-#ifdef _WIN32
-    Sleep(ms);
-#else
     struct timespec req = {0};
     req.tv_sec = ms / 1000U;
     req.tv_nsec = (ms % 1000U) * 1000000UL;
     nanosleep(&req, NULL);
-#endif
 }
 
 static uint32_t get_time_s(void) {
-#ifdef _WIN32
-    return (uint32_t)(GetTickCount64() / 1000ULL);
-#else
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return (uint32_t)ts.tv_sec;
-#endif
 }
 
 static void apply_led_pattern(bool green_on, bool yellow_on, bool red_on) {

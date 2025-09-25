@@ -5,20 +5,17 @@
 extern "C" {
 #endif
 
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 199309L
+#endif
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include "gpios/gpio.h"
 #include "log/log.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#else
-#ifndef _POSIX_C_SOURCE
-#define _POSIX_C_SOURCE 199309L
-#endif
 #include <time.h>
-#endif
 
 #define LED_ACTIVE_STATE GPIO_STATE_HIGH
 #define LED_INACTIVE_STATE GPIO_STATE_LOW

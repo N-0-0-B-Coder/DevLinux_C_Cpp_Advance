@@ -15,7 +15,7 @@ typedef enum {
     LOG_LEVEL_ERROR
 } Log_level;
 
-Log_level current_log_level;
+extern Log_level current_log_level;
 
 /**
  * @brief Set the current log level. Messages with a level lower than the current level will be ignored.

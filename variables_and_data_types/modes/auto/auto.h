@@ -5,21 +5,16 @@
 extern "C" {
 #endif
 
-#ifndef _WIN32
 #ifndef _POSIX_C_SOURCE
 #define _POSIX_C_SOURCE 199309L
-#endif
 #endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#else
+
 #include <time.h>
-#endif
 
 #include "config.h"
 #include "log/log.h"

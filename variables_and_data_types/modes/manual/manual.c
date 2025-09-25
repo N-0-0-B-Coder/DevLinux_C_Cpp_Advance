@@ -3,14 +3,10 @@
 static const char *TAG = "MANUAL_MODE";
 
 static void delay_ms(unsigned int ms) {
-#ifdef _WIN32
-    Sleep(ms);
-#else
     struct timespec req = {0};
     req.tv_sec = ms / 1000U;
     req.tv_nsec = (ms % 1000U) * 1000000UL;
     nanosleep(&req, NULL);
-#endif
 }
 
 static uint32_t get_time_s(void) {

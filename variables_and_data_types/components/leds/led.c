@@ -76,14 +76,10 @@ led_err_code_t led_blink(uint8_t led_pin, uint16_t interval_ms, uint8_t times) {
         if (led_toggle(led_pin) != LED_ERROR_NONE) {
             return LED_ERROR;
         }
-#ifdef _WIN32
-        Sleep(interval_ms);  // Windows Sleep takes milliseconds
-#else
         struct timespec req = {0};
         req.tv_sec = interval_ms / 1000;
         req.tv_nsec = (interval_ms % 1000) * 1000000L;
         nanosleep(&req, (struct timespec *)NULL);
-#endif
     }
     return LED_ERROR_NONE;
 }

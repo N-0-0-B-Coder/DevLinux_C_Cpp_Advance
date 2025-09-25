@@ -25,7 +25,7 @@ pump_err_code_t pump_set_state(pump_t *pump, pump_state_t state) {
     pump->state = state;
     LOG_I(TAG, "Pump %d state set to %d", pump->id, state);
     temp_value_decrease();
-    humidity_value_increase();
+    moisture_value_increase();
     return PUMP_ERROR_NONE;
 }
 
