@@ -46,11 +46,11 @@ int main(void) {
             if (!manual_mode_noti) {
                 manual_mode_noti = true;
                 auto_mode_noti = false;
-                LOG_I(TAG, "Manual mode toggled on, stopping pumps");
+                LOG_I(TAG, "Manual mode toggled on");
             }
-            pump_set_state(&pump, PUMP_STATE_OFF);
+            manual_mode_run(&pump);
         }
-        
+
     }
     return 0;
 }
