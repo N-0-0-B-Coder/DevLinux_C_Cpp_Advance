@@ -3,13 +3,13 @@
 static const char *TAG = "AUTO_MODE";
 
 float temperature = 0.0f;
-float humidity = 0.0f;
+float moisture = 0.0f;
 
 // Timing Variables in seconds
 uint16_t pump_start_time = 0;
 uint16_t pump_end_time = 0;
 uint16_t pump_duration = 0;
-uint16_t pump_cooldown = 120;
+uint16_t pump_cooldown = PUMP_COOLDOWN;
 
 bool pump_lock = false;
 float pump_flow_rate = 0.0f;
@@ -35,14 +35,27 @@ uint16_t get_time_s(void) {
 #endif
 }
 
-void auto_mode_run(temp_sensor_t *temp_sensor, humidity_sensor_t *humidity_sensor, pump_t *pump) {
+void auto_mode_run(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_sensor, pump_t *pump) {
     // Get pump flow rate
     pump_flow_rate = pump_get_flow_rate(pump);
-    if (pump_flow_rate <= 0.0f) {
-        LOG_W(TAG, "Pump flow rate is %.2f L/min; skipping auto mode cycle", pump_flow_rate);
+    if (pump_flow_rate <= PUMP_MIN_FLOW_RATE) {
+        LOG_W(TAG, "Pump flow rate low, please check the pump");
+        if (led_on(LED_RED_PIN)) {
+            LOG_E(TAG, "Failed to turn on RED LED");
+        }
         return;
     }
-    pump_duration = (uint16_t)((5.0f / pump_flow_rate) * 60); // duration to pump based on flow rate in seconds
+    else {
+        if (is_led_on(LED_RED_PIN)) {
+            if (led_off(LED_RED_PIN)) {
+                LOG_E(TAG, "Failed to turn off RED LED");
+                return;
+            }
+        }
+    }
+
+    // Calculate pump duration based on flow rate (in seconds)
+    pump_duration = (uint16_t)((PUMP_MAX_FLOW_RATE / pump_flow_rate) * 60);
 
     // Read Temperature
     if (temp_sensor_read(temp_sensor, &temperature) == TEMPERATURE_ERROR_NONE) {
@@ -51,16 +64,17 @@ void auto_mode_run(temp_sensor_t *temp_sensor, humidity_sensor_t *humidity_senso
         LOG_E(TAG, "Failed to read Temperature");
     }
 
-    // Read Humidity
-    if (humidity_sensor_read(humidity_sensor, &humidity) == HUMIDITY_ERROR_NONE) {
-        LOG_I(TAG, "Current Humidity: %.2f %%", humidity);
+    // Read Moisture
+    if (moisture_sensor_read(moisture_sensor, &moisture) == MOISTURE_ERROR_NONE) {
+        LOG_I(TAG, "Current Moisture: %.2f %%", moisture);
     } else {
-        LOG_E(TAG, "Failed to read Humidity");
+        LOG_E(TAG, "Failed to read Moisture");
     }
 
     pump_end_time = get_time_s();
     if (pump->state == PUMP_STATE_ON && (pump_end_time - pump_start_time >= pump_duration)) {
         pump_set_state(pump, PUMP_STATE_OFF);
+        led_off(LED_YELLOW_PIN);
         LOG_I(TAG, "Pump AUTO OFF after interval");
         pump_lock = true;
         pump_start_time = get_time_s(); // Reset start time for cooldown
@@ -74,20 +88,25 @@ void auto_mode_run(temp_sensor_t *temp_sensor, humidity_sensor_t *humidity_senso
         }
     }
 
-    if (temperature > 60.0f || humidity < 30.0f) {
+    if (temperature > 60.0f || moisture < 30.0f) {
         if (pump_lock) {
             LOG_I(TAG, "Moisture or Temperature levels critical but pump is in cooldown");
             led_blink(LED_RED_PIN, 200, 3);
         } else {
             pump_set_state(pump, PUMP_STATE_ON);
-            LOG_I(TAG, "Temperature: %.2f C, Humidity: %.2f %% - Pump ON", temperature, humidity);
+            LOG_I(TAG, "Temperature: %.2f C, Moisture: %.2f %% - Pump ON", temperature, moisture);
             pump_start_time = get_time_s();
+            led_on(LED_YELLOW_PIN);
         }
-    } else if (temperature <= 30.0f && humidity >= 70.0f) {
-        pump_set_state(pump, PUMP_STATE_OFF);
-        LOG_I(TAG, "Temperature: %.2f C, Humidity: %.2f %% - Pump OFF", temperature, humidity);
-        pump_lock = true;
-        pump_start_time = get_time_s(); // Reset start time for cooldown
+    } else if (temperature <= 30.0f && moisture >= 70.0f) {
+        pump_state_t pump_state = pump_get_state(pump);
+        if (pump_state == PUMP_STATE_ON) {
+            pump_set_state(pump, PUMP_STATE_OFF);
+            led_off(LED_YELLOW_PIN);
+            LOG_I(TAG, "Temperature and Moisture optimal - Pump OFF");
+            pump_lock = true;
+            pump_start_time = get_time_s(); // Reset start time for cooldown
+        }
     }
 
     // Wait before next reading

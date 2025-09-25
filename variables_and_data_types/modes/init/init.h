@@ -13,12 +13,12 @@ extern "C" {
 #include "log/log.h"
 #include "gpios/gpio.h"
 #include "temperature/temperature.h"
-#include "humidity/humidity.h"
+#include "soil_moisture/moisture.h"
 #include "pumps/pump.h"
 #include "leds/led.h"
 #include "buttons/button.h"
 
-int init_system(temp_sensor_t *temp_sensor, humidity_sensor_t *humidity_sensor, pump_t *pump);
+int init_system(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_sensor, pump_t *pump);
 
 #ifdef __cplusplus
 }
