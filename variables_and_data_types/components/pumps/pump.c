@@ -1,6 +1,6 @@
 #include "pump.h"
 #include "temperature/temperature.h"
-#include "humidity/humidity.h"
+#include "soil_moisture/moisture.h"
 
 static const char *TAG = "PUMP";
 
