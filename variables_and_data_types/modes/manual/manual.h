@@ -5,6 +5,18 @@
 extern "C" {
 #endif
 
+#ifndef _WIN32
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 199309L
+
+#include <time.h>
+#else
+
+#include <windows.h>
+
+#endif
+#endif
+
 #include "config.h"
 #include "buttons/button.h"
 #include "leds/led.h"

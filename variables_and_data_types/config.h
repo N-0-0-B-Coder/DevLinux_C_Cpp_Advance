@@ -30,7 +30,7 @@ extern "C" {
 #define PUMP_MIN_FLOW_RATE          0.5f // liters per minute
 #define PUMP_MAX_FLOW_RATE          5.0f // liters per minute
 
-// Default Auto/Manual Mode Behaviour
+// Default Auto/Manual Mode
 #define DEFAULT_MOISTURE_MIN_PERCENT        35.0f
 #define DEFAULT_MOISTURE_MAX_PERCENT        65.0f
 #define DEFAULT_MAX_TEMPERATURE_C           55.0f
@@ -66,9 +66,6 @@ typedef struct {
 
 extern system_config_t g_system_config;
 extern system_state_t g_system_state;
-
-void system_config_init(system_config_t *config);
-void system_state_init(system_state_t *state, system_mode_t default_mode);
 
 #ifdef __cplusplus
 }

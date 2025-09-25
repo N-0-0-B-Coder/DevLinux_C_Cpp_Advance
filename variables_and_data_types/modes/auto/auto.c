@@ -55,6 +55,8 @@ void auto_mode_run(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_senso
 
     float temperature = 0.0f;
     float moisture = 0.0f;
+
+    // When calling the read functions, the temperature and moisture values will be simulated to change
     bool temperature_ok = (temp_sensor_read(temp_sensor, &temperature) == TEMPERATURE_ERROR_NONE);
     bool moisture_ok = (moisture_sensor_read(moisture_sensor, &moisture) == MOISTURE_ERROR_NONE);
 
@@ -120,6 +122,14 @@ void auto_mode_run(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_senso
             }
             state->pump_locked = true;
             state->pump_locked_at_s = now;
+        }
+        else {
+            LOG_I(TAG, "Auto watering in progress...");
+            if (pump_set_state(pump, PUMP_STATE_ON) == PUMP_ERROR_NONE) {
+                // Need to call set_state to simulate increased humidity and decreased temperature
+            } else {
+                LOG_E(TAG, "Failed to maintain pump ON state during watering");
+            }
         }
     }
 

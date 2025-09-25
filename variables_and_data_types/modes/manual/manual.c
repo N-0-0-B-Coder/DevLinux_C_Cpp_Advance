@@ -1,11 +1,5 @@
 #include "manual.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <time.h>
-#endif
-
 static const char *TAG = "MANUAL_MODE";
 
 static void delay_ms(unsigned int ms) {

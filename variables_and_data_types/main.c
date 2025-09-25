@@ -18,6 +18,9 @@
 
 static const char *TAG = "MAIN";
 
+system_config_t g_system_config;
+system_state_t g_system_state;
+
 temp_sensor_t temp_sensor;
 moisture_sensor_t moisture_sensor;
 pump_t pump;
