@@ -12,10 +12,12 @@ extern "C" {
 #include "log/log.h"
 
 #ifdef _WIN32
-    #include <windows.h>  // for sleep()
+#include <windows.h>
 #else
-    #include <time.h>     // for nanosleep()
-    #define _POSIX_C_SOURCE 199309L
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 199309L
+#endif
+#include <time.h>
 #endif
 
 #define LED_ACTIVE_STATE GPIO_STATE_HIGH

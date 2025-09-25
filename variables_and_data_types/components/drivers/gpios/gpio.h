@@ -97,11 +97,11 @@ typedef enum {
  * 
  */
 typedef struct {
-	mode:2,
-	output_type:1,
-	speed:2,
-	pull_ud:2,
-	reversed:1
+        uint8_t mode:2;
+        uint8_t output_type:1;
+        uint8_t speed:2;
+        uint8_t pull_ud:2;
+        uint8_t reversed:1;
 }gpio_cfg_t;
 
 /**

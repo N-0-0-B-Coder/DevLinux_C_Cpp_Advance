@@ -14,6 +14,7 @@ pump_err_code_t pump_init(pump_t *pump, uint8_t id, gpio_num_t control_pin) {
     pump->state = PUMP_STATE_OFF;
     pump->flow_rate = 0.0f;
     LOG_I(TAG, "Pump %d initialized", id);
+    return PUMP_ERROR_NONE;
 }
 
 pump_err_code_t pump_set_state(pump_t *pump, pump_state_t state) {

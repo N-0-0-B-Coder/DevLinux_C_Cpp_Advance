@@ -16,12 +16,12 @@ float pump_flow_rate = 0.0f;
 
 void delay_ms(unsigned int ms) {
 #ifdef _WIN32
-    sleep(SENSOR_READ_INTERVAL_MS / 1000);  // Windows Sleep takes milliseconds
+    Sleep(ms);
 #else
     struct timespec req = {0};
-    req.tv_sec = SENSOR_READ_INTERVAL_MS / 1000;
-    req.tv_nsec = (SENSOR_READ_INTERVAL_MS % 1000) * 1000000L;
-    nanosleep(&req, (struct timespec *)NULL);
+    req.tv_sec = ms / 1000;
+    req.tv_nsec = (ms % 1000) * 1000000L;
+    nanosleep(&req, NULL);
 #endif
 }
 
@@ -38,17 +38,21 @@ uint16_t get_time_s(void) {
 void auto_mode_run(temp_sensor_t *temp_sensor, humidity_sensor_t *humidity_sensor, pump_t *pump) {
     // Get pump flow rate
     pump_flow_rate = pump_get_flow_rate(pump);
+    if (pump_flow_rate <= 0.0f) {
+        LOG_W(TAG, "Pump flow rate is %.2f L/min; skipping auto mode cycle", pump_flow_rate);
+        return;
+    }
     pump_duration = (uint16_t)((5.0f / pump_flow_rate) * 60); // duration to pump based on flow rate in seconds
 
     // Read Temperature
-    if (temp_sensor_read(&temp_sensor, &temperature) == TEMPERATURE_ERROR_NONE) {
+    if (temp_sensor_read(temp_sensor, &temperature) == TEMPERATURE_ERROR_NONE) {
         LOG_I(TAG, "Current Temperature: %.2f C", temperature);
     } else {
         LOG_E(TAG, "Failed to read Temperature");
     }
 
     // Read Humidity
-    if (humidity_sensor_read(&humidity_sensor, &humidity) == HUMIDITY_ERROR_NONE) {
+    if (humidity_sensor_read(humidity_sensor, &humidity) == HUMIDITY_ERROR_NONE) {
         LOG_I(TAG, "Current Humidity: %.2f %%", humidity);
     } else {
         LOG_E(TAG, "Failed to read Humidity");
