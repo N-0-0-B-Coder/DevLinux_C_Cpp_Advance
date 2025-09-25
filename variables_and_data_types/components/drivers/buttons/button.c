@@ -16,7 +16,7 @@ button_err_t button_init(uint8_t button_pin) {
         LOG_E(TAG, "Failed to initialize button on pin %d", button_pin);
         return BUTTON_ERROR_INIT_FAIL;
     }
-    LOG_D(TAG, "Button initialized on pin %d", button_pin);
+    LOG_I(TAG, "Button initialized on pin %d", button_pin);
     return BUTTON_ERROR_NONE;
 }
 
@@ -36,6 +36,6 @@ button_err_t button_set_state(uint8_t button_pin, button_state_t state) {
         LOG_E(TAG, "Failed to set button state on pin %d", button_pin);
         return BUTTON_ERROR_FAIL;
     }
-    LOG_D(TAG, "Button state set on pin %d to %s", button_pin, state == BUTTON_STATE_PRESSED ? "PRESSED" : "RELEASED");
+    LOG_I(TAG, "Button state set on pin %d to %s", button_pin, state == BUTTON_STATE_PRESSED ? "PRESSED" : "RELEASED");
     return BUTTON_ERROR_NONE;
 }

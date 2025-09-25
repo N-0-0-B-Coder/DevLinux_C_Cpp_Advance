@@ -12,26 +12,39 @@ void system_config_init(system_config_t *config) {
     config->max_temperature_c = DEFAULT_MAX_TEMPERATURE_C;
     config->max_watering_duration_s = DEFAULT_MAX_WATERING_DURATION_S;
     config->manual_watering_duration_s = DEFAULT_MANUAL_WATERING_DURATION_S;
-    config->pump_cooldown_s = PUMP_COOLDOWN;
+    config->pump_cooldown_s = PUMP_COOLDOWN_S;
     config->sensor_read_interval_ms = SENSOR_READ_INTERVAL_MS;
 }
 
-void system_state_init(system_state_t *state, system_mode_t default_mode) {
+void system_state_init(system_state_t *state, system_mode_t mode) {
     if (state == NULL) {
         return;
     }
 
     memset(state, 0, sizeof(*state));
-    state->mode = default_mode;
+
+    if (mode != MODE_AUTO && mode != MODE_MANUAL) {
+        mode = MODE_AUTO; // Default to AUTO if invalid mode
+    }
+    else {
+        state->mode = mode;
+        if (mode == MODE_AUTO) {
+            button_set_state(BUTTON_TOGGLE_AUTO_PIN, BUTTON_STATE_PRESSED);
+        }
+        else {
+            button_set_state(BUTTON_TOGGLE_AUTO_PIN, BUTTON_STATE_RELEASED);
+        }
+    }
+    state->pump_locked = false;
     state->pump_started_at_s = 0U;
     state->pump_locked_at_s = 0U;
+    state->current_status = NORMAL;
+    state->last_temperature_c = 0.0f;
+    state->last_moisture_percent = 0.0f;
 }
 
 int init_system(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_sensor, pump_t *pump) {
     LOG_I(TAG, "System initializing...");
-
-    system_config_init(&g_system_config);
-    system_state_init(&g_system_state, MODE_AUTO);
 
     // Initialize GPIOs for LEDs
     if (led_init(LED_GREEN_PIN) != LED_ERROR_NONE) goto error;
@@ -50,12 +63,13 @@ int init_system(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_sensor, 
 
     // Initialize GPIOs for Buttons
     if (button_init(BUTTON_TOGGLE_AUTO_PIN) != BUTTON_ERROR_NONE) goto error;
-    if (button_init(BUTTON_MANUAL_ACTIVE_PIN) != BUTTON_ERROR_NONE) goto error;
+    if (button_init(BUTTON_MANUAL_PUMP_PIN) != BUTTON_ERROR_NONE) goto error;
+
+    // Initialize System Config and State
+    system_config_init(&g_system_config);
+    system_state_init(&g_system_state, DEFAULT_MODE);
 
     LOG_I(TAG, "System initialized successfully");
-
-    // Set system to AUTO mode by default
-    if (button_set_state(BUTTON_TOGGLE_AUTO_PIN, BUTTON_STATE_PRESSED) != BUTTON_ERROR_NONE) goto error;
 
     // Set initial LED states
     if (led_on(LED_GREEN_PIN) != LED_ERROR_NONE) goto error;

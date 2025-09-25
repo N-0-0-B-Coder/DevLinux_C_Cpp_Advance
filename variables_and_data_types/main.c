@@ -51,6 +51,7 @@ int main(void) {
                 auto_mode_noti = false;
                 LOG_I(TAG, "Manual mode toggled on");
             }
+            button_set_state(BUTTON_MANUAL_PUMP_PIN, BUTTON_STATE_PRESSED);
             manual_mode_run(&pump);
         }
 

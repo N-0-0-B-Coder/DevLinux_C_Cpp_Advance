@@ -9,13 +9,14 @@ OBJS := $(SRCS:%.c=$(OBJ_DIR)/%.o)
 
 INCLUDE_DIRS := . \
     components \
+	components/peripherals \
     components/drivers \
     components/sensors \
     components/utils \
     modes
 
 CPPFLAGS := $(addprefix -I,$(INCLUDE_DIRS))
-CFLAGS ?= -Wall -Wextra -std=c11
+CFLAGS ?= -Wall -Wextra #-std=c11
 
 .PHONY: all clean
 

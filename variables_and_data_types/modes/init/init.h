@@ -12,6 +12,7 @@ extern "C" {
 #include "config.h"
 #include "log/log.h"
 #include "gpios/gpio.h"
+#include "buttons/button.h"
 #include "temperature/temperature.h"
 #include "soil_moisture/moisture.h"
 #include "pumps/pump.h"

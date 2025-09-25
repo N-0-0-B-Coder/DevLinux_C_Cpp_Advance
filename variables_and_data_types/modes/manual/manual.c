@@ -2,32 +2,50 @@
 
 static const char *TAG = "MANUAL_MODE";
 
-static void delay_ms(unsigned int ms) {
-    struct timespec req = {0};
-    req.tv_sec = ms / 1000U;
-    req.tv_nsec = (ms % 1000U) * 1000000UL;
-    nanosleep(&req, NULL);
-}
-
-static uint32_t get_time_s(void) {
-#ifdef _WIN32
-    return (uint32_t)(GetTickCount64() / 1000ULL);
-#else
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (uint32_t)ts.tv_sec;
-#endif
-}
-
 static void apply_led_pattern(bool green_on, bool yellow_on, bool red_on) {
-    if ((green_on ? led_on(LED_GREEN_PIN) : led_off(LED_GREEN_PIN)) != LED_ERROR_NONE) {
+    if ((green_on ? led_on(LED_GREEN_PIN) : led_off(LED_GREEN_PIN)) == LED_ERROR_NONE) {
+        LOG_I(TAG, "GREEN LED %s", green_on ? "ON" : "OFF");
+    }
+    else {
         LOG_E(TAG, "Failed to update GREEN LED");
     }
-    if ((yellow_on ? led_on(LED_YELLOW_PIN) : led_off(LED_YELLOW_PIN)) != LED_ERROR_NONE) {
+    if ((yellow_on ? led_on(LED_YELLOW_PIN) : led_off(LED_YELLOW_PIN)) == LED_ERROR_NONE) {
+        LOG_I(TAG, "YELLOW LED %s", yellow_on ? "ON" : "OFF");
+    }
+    else {
         LOG_E(TAG, "Failed to update YELLOW LED");
     }
-    if ((red_on ? led_on(LED_RED_PIN) : led_off(LED_RED_PIN)) != LED_ERROR_NONE) {
+    if ((red_on ? led_on(LED_RED_PIN) : led_off(LED_RED_PIN)) == LED_ERROR_NONE) {
+        LOG_I(TAG, "RED LED %s", red_on ? "ON" : "OFF");
+    }
+    else {
         LOG_E(TAG, "Failed to update RED LED");
+    }
+    if (green_on && yellow_on) {
+        if (led_blink(LED_YELLOW_PIN, 500, 3) == LED_ERROR_NONE) {
+            LOG_I(TAG, "YELLOW LED BLINK");
+        }
+        else {
+            LOG_E(TAG, "Failed to blink YELLOW LED");
+        }
+    }
+}
+
+static void update_leds(const system_state_t *state) {
+    switch (state->current_status) {
+        case ERROR_FLOW_LOW:
+        case ERROR_ACTIVE:
+            apply_led_pattern(false, false, true);
+            break;
+        case WATERING:
+            apply_led_pattern(false, true, false);
+            break;
+        case MOISTURE_ALERT:
+            apply_led_pattern(true, true, false);
+            break;
+        default:
+            apply_led_pattern(true, false, false);
+            break;
     }
 }
 
@@ -37,30 +55,50 @@ void manual_mode_run(pump_t *pump) {
     uint32_t now = get_time_s();
 
     state->mode = MODE_MANUAL;
-    state->error_active = false;
 
     if (state->pump_locked && (now - state->pump_locked_at_s >= config->pump_cooldown_s)) {
         state->pump_locked = false;
         LOG_I(TAG, "Pump cooldown period ended; manual watering available");
     }
 
-    if (state->watering) {
-        if ((now - state->pump_started_at_s) >= config->manual_watering_duration_s) {
-            if (pump_set_state(pump, PUMP_STATE_OFF) == PUMP_ERROR_NONE) {
-                LOG_I(TAG, "Manual watering cycle finished");
-                state->watering = false;
-            } else {
-                LOG_E(TAG, "Failed to stop pump after manual watering");
+    if (state->current_status == WATERING) {
+        if (button_get_state(BUTTON_MANUAL_PUMP_PIN) == BUTTON_STATE_RELEASED) {
+            LOG_I(TAG, "Manual watering button released; stopping pump");
+        } else {
+            if ((now - state->pump_started_at_s) >= config->manual_watering_duration_s) {
+                LOG_I(TAG, "Manual watering duration elapsed; stopping pump");
             }
-            state->pump_locked = true;
-            state->pump_locked_at_s = now;
+            else {
+                LOG_I(TAG, "Manual watering in progress...");
+                if (pump_set_state(pump, PUMP_STATE_ON) == PUMP_ERROR_NONE) {
+                    // Pump is already ON; continue watering
+                } else {
+                    LOG_E(TAG, "Failed to maintain pump ON state during manual watering");
+                }
+                return; // Continue watering; do not proceed to stop the pump
+            }
+        } 
+        // Stop pump immediately after manual mode trigger
+        if (pump_set_state(pump, PUMP_STATE_OFF) == PUMP_ERROR_NONE) {
+            LOG_I(TAG, "Manual watering cycle finished");
+            state->current_status = NORMAL;
+        } else {
+            LOG_E(TAG, "Failed to stop pump after manual watering");
+            state->current_status = ERROR_ACTIVE;
+            update_leds(state);
+            return;
         }
+        state->current_status = NORMAL;
+        state->pump_started_at_s = 0;
+        state->pump_locked = true;
+        state->pump_locked_at_s = now;
+        update_leds(state);
     } else {
-        if (button_get_state(BUTTON_MANUAL_ACTIVE_PIN) == BUTTON_STATE_PRESSED) {
+        if ((state->current_status == NORMAL) && (button_get_state(BUTTON_MANUAL_PUMP_PIN) == BUTTON_STATE_PRESSED)) {
             if (!state->pump_locked) {
                 if (pump_set_state(pump, PUMP_STATE_ON) == PUMP_ERROR_NONE) {
                     LOG_I(TAG, "Manual watering started");
-                    state->watering = true;
+                    state->current_status = WATERING;
                     state->pump_started_at_s = now;
                 } else {
                     LOG_E(TAG, "Failed to start pump for manual watering");
@@ -74,18 +112,7 @@ void manual_mode_run(pump_t *pump) {
                     LOG_E(TAG, "Failed to turn pump off while idle in manual mode");
                 }
             }
-            state->watering = false;
+            state->current_status = NORMAL;
         }
     }
-
-    if (state->watering) {
-        apply_led_pattern(false, true, false);
-    } else if (state->pump_locked) {
-        apply_led_pattern(false, false, true);
-    } else {
-        apply_led_pattern(true, false, false);
-    }
-
-    state->moisture_alert = false;
-    delay_ms(100);
 }

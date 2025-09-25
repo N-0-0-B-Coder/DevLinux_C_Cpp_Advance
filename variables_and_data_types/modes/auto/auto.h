@@ -5,16 +5,12 @@
 extern "C" {
 #endif
 
-#ifndef _POSIX_C_SOURCE
-#define _POSIX_C_SOURCE 199309L
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 
-
-#include <time.h>
+#include "systime/systime.h"
 
 #include "config.h"
 #include "log/log.h"

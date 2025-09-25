@@ -5,12 +5,7 @@
 extern "C" {
 #endif
 
-
-#ifndef _POSIX_C_SOURCE
-#define _POSIX_C_SOURCE 199309L
-#endif
-
-#include <time.h>
+#include "systime/systime.h"
 
 #include "config.h"
 #include "buttons/button.h"
