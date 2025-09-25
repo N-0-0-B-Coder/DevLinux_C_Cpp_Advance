@@ -12,6 +12,7 @@
 #include "leds/led.h"
 #include "buttons/button.h"
 
+#include "init/init.h"
 #include "auto/auto.h"
 #include "manual/manual.h"
 
