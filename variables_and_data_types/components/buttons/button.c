@@ -21,11 +21,12 @@ button_err_t button_init(uint8_t button_pin) {
 }
 
 button_state_t button_get_state(uint8_t button_pin) {
-    if (gpio_read(button_pin) == GPIO_STATE_ERROR) {
+    gpio_state_t gpio_state = gpio_read(button_pin);
+    if (gpio_state == GPIO_STATE_ERROR) {
         LOG_E(TAG, "Error reading button state on pin %d", button_pin);
         return BUTTON_STATE_RELEASED; // Default to released on error
     }
-    return gpio_read(button_pin) ? BUTTON_STATE_PRESSED : BUTTON_STATE_RELEASED;
+    return gpio_state == GPIO_STATE_HIGH ? BUTTON_STATE_PRESSED : BUTTON_STATE_RELEASED;
 }
 
 button_err_t button_set_state(uint8_t button_pin, button_state_t state) {
