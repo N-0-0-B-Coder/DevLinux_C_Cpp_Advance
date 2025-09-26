@@ -8,7 +8,7 @@ led_err_code_t led_init(uint8_t led_pin) {
         .mode = GPIO_OUTPUT,
         .output_type = GPIO_PUSH_PULL,
         .speed = GPIO_HIGH_SPEED,
-        .pull_ud = GPIO_NO_PULL,
+        .pull_ud = GPIO_NO_PUPD,
         .reversed = 0
     };
     ret = gpio_init(led_pin, &led_cfg);

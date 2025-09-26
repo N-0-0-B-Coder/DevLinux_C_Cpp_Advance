@@ -19,7 +19,8 @@ typedef enum {
 } pump_state_t;
 
 typedef enum {
-    PUMP_ERROR_NULL_ARG = -1,
+    PUMP_ERROR = -2,
+    PUMP_ERROR_NULL_ARG,
     PUMP_ERROR_NONE
 }pump_err_code_t;
 

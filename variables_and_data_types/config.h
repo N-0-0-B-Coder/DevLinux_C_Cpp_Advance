@@ -10,7 +10,7 @@ extern "C" {
 #include <stdbool.h>
 
 // Logging Configuration
-#define LOG_LEVEL                   LOG_LEVEL_INFO
+#define LOG_LEVEL                   LOG_LEVEL_DEBUG
 
 // Default Mode
 #define DEFAULT_MODE                MODE_AUTO
@@ -26,17 +26,17 @@ extern "C" {
 #define PUMP_PIN                    GPIO7
 
 // Sensor Configuration
-#define SENSOR_READ_INTERVAL_MS     20000
+#define SENSOR_READ_INTERVAL_MS     5000
 
 // Pump Configuration
-#define PUMP_COOLDOWN_S             60 // seconds
+#define PUMP_COOLDOWN_S             10 // seconds
 #define PUMP_MIN_FLOW_RATE          0.5f // liters per minute
 #define PUMP_MAX_FLOW_RATE          5.0f // liters per minute
 
 // Default Auto/Manual Mode
-#define DEFAULT_MOISTURE_MIN_PERCENT        35.0f
-#define DEFAULT_MOISTURE_MAX_PERCENT        65.0f
-#define DEFAULT_MAX_TEMPERATURE_C           55.0f
+#define DEFAULT_MOISTURE_MIN_PERCENT        25.0f
+#define DEFAULT_MOISTURE_MAX_PERCENT        80.0f
+#define DEFAULT_MAX_TEMPERATURE_C           50.0f
 #define DEFAULT_MAX_WATERING_DURATION_S     30
 #define DEFAULT_MANUAL_WATERING_DURATION_S  20
 
@@ -69,6 +69,7 @@ typedef struct {
     float last_temperature_c;
     float last_moisture_percent;
     system_status_t current_status;
+    system_status_t previous_status;
     bool pump_locked;
     uint32_t pump_started_at_s;
     uint32_t pump_locked_at_s;

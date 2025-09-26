@@ -8,7 +8,7 @@ button_err_t button_init(uint8_t button_pin) {
         .mode = GPIO_INPUT,
         .output_type = GPIO_PUSH_PULL,
         .speed = GPIO_HIGH_SPEED,
-        .pull_ud = GPIO_NO_PULL,
+        .pull_ud = GPIO_NO_PUPD,
         .reversed = 0
     };
     ret = gpio_init(button_pin, &button_cfg);

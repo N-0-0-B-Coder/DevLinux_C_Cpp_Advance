@@ -43,6 +43,7 @@ void system_state_init(system_state_t *state, system_mode_t mode) {
     state->pump_started_at_s = 0U;
     state->pump_locked_at_s = 0U;
     state->current_status = NORMAL;
+    state->previous_status = NORMAL;
     state->last_temperature_c = 0.0f;
     state->last_moisture_percent = 0.0f;
 

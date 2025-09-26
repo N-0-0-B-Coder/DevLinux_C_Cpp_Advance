@@ -1,10 +1,10 @@
 #include "moisture.h"
 
 static const char *TAG = "MOISTURE_SENSOR";
-static float moisture_simulated_value = 100.0f;
+static float moisture_simulated_value = 65.0f;
 
 void moisture_value_increase(void) {
-    float random_increase_value = 5.0f + ((float)rand() / (float)RAND_MAX) * (20.0f - 5.0f);
+    float random_increase_value = 10.0f + ((float)rand() / (float)RAND_MAX) * (20.0f - 10.0f);
     moisture_simulated_value += random_increase_value;
     if (moisture_simulated_value > 100.0f) {
         moisture_simulated_value = 100.0f; // Cap at 100 %
@@ -42,10 +42,13 @@ moisture_err_code_t moisture_sensor_read(moisture_sensor_t *sensor, float *moist
     }
 
     // Simulate sensor value change
-    float random_decrease_value = 0.5f + ((float)rand() / (float)RAND_MAX) * (15.0f - 0.5f);
+    float random_decrease_value = 0.5f + ((float)rand() / (float)RAND_MAX) * (12.0f - 0.5f);
 
     // Simulate reading from the sensor
     moisture_simulated_value -= random_decrease_value;
+    if (moisture_simulated_value < 0.0f) {
+        moisture_simulated_value = 0.0f; // Cap at 0 %
+    }
     sensor->last_value = moisture_simulated_value;
     *moisture = moisture_simulated_value;
     delay_ms(50);

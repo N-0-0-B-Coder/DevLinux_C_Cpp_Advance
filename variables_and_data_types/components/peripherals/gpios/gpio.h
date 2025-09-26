@@ -64,7 +64,7 @@ typedef enum {
  * 
  */
 typedef enum {
-	GPIO_NO_PULL = 0,
+	GPIO_NO_PUPD = 0,
 	GPIO_PULL_UP,
 	GPIO_PULL_DOWN
 }gpio_pull_ud_t;
