@@ -36,6 +36,7 @@ static void update_leds(const system_state_t *state) {
         case WATERING:
             apply_led_pattern(false, true, false);
             break;
+        case TEMP_ALERT:
         case MOISTURE_ALERT:
             apply_led_pattern(true, true, false);
             break;
@@ -81,11 +82,9 @@ void auto_mode_run(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_senso
 
     if (moisture < config->moisture_min_percent) {
         state->current_status = MOISTURE_ALERT;
-        update_leds(state);
     }
     if (temperature > config->max_temperature_c) {
         state->current_status = TEMP_ALERT;
-        update_leds(state);
     }
 
     float pump_flow_rate = pump_get_flow_rate(pump);
@@ -137,7 +136,7 @@ void auto_mode_run(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_senso
         if (!state->pump_locked && (state->current_status == MOISTURE_ALERT || state->current_status == TEMP_ALERT)) {
             if (state->current_status == MOISTURE_ALERT) {
                 LOG_W(TAG, "Moisture %.2f%% below %.2f%% - Pump ON", moisture, config->moisture_min_percent);
-            } else {
+            } else if (state->current_status == TEMP_ALERT) {
                 LOG_W(TAG, "Temperature %.2f C above %.2f C - Pump ON", temperature, config->max_temperature_c);
             }
             if (pump_set_state(pump, PUMP_STATE_ON) == PUMP_ERROR_NONE) {
@@ -146,7 +145,7 @@ void auto_mode_run(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_senso
             } else {
                 LOG_E(TAG, "Failed to start pump for auto watering");
             }
-        } else if (state->pump_locked) {
+        } else if (state->pump_locked && (state->current_status == MOISTURE_ALERT || state->current_status == TEMP_ALERT)) {
             LOG_W(TAG, "Pump is in cooldown; cannot auto water now");
         } else if (pump_get_state(pump) != PUMP_STATE_OFF) {
             if (pump_set_state(pump, PUMP_STATE_OFF) != PUMP_ERROR_NONE) {
