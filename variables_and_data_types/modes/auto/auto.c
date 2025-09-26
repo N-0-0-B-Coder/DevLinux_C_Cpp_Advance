@@ -135,12 +135,12 @@ void auto_mode_run(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_senso
 
     if (state->current_status != WATERING) {
         if (!state->pump_locked && (state->current_status == MOISTURE_ALERT || state->current_status == TEMP_ALERT)) {
+            if (state->current_status == MOISTURE_ALERT) {
+                LOG_W(TAG, "Moisture %.2f%% below %.2f%% - Pump ON", moisture, config->moisture_min_percent);
+            } else {
+                LOG_W(TAG, "Temperature %.2f C above %.2f C - Pump ON", temperature, config->max_temperature_c);
+            }
             if (pump_set_state(pump, PUMP_STATE_ON) == PUMP_ERROR_NONE) {
-                if (state->current_status == MOISTURE_ALERT) {
-                    LOG_W(TAG, "Moisture %.2f%% below %.2f%% - Pump ON", moisture, config->moisture_min_percent);
-                } else {
-                    LOG_W(TAG, "Temperature %.2f C above %.2f C - Pump ON", temperature, config->max_temperature_c);
-                }
                 state->current_status = WATERING;
                 state->pump_started_at_s = now;
             } else {
