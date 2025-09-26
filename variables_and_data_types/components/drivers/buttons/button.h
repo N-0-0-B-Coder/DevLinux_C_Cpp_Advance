@@ -8,6 +8,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 #include "gpios/gpio.h"
+#include "systime/systime.h"
 #include "log/log.h"
 
 typedef enum {

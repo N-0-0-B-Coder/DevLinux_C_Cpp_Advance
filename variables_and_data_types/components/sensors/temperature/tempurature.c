@@ -9,6 +9,7 @@ void temp_value_decrease(void) {
     if (temperature_simulated_value < 0.0f) {
         temperature_simulated_value = 0.0f; // Cap at 0 C
     }
+    delay_ms(50);
 }
 
 temp_sensor_status_t temp_sensor_init(temp_sensor_t *sensor, gpio_num_t data_pin) {
@@ -33,6 +34,7 @@ temp_sensor_status_t temp_sensor_init(temp_sensor_t *sensor, gpio_num_t data_pin
     sensor->last_value = 0.0f;
 
     LOG_I(TAG, "Temperature sensor initialized on GPIO pin %d", data_pin);
+    delay_ms(50);
     return TEMPERATURE_ERROR_NONE;
 }
 
@@ -48,5 +50,6 @@ temp_sensor_status_t temp_sensor_read(temp_sensor_t *sensor, float *temperature)
     sensor->last_value = temperature_simulated_value;
     *temperature = temperature_simulated_value;
 
+    delay_ms(50);
     return TEMPERATURE_ERROR_NONE;
 }

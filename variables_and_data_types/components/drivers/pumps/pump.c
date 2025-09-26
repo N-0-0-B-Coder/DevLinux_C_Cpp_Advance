@@ -14,6 +14,7 @@ pump_err_code_t pump_init(pump_t *pump, uint8_t id, gpio_num_t control_pin) {
     pump->state = PUMP_STATE_OFF;
     pump->flow_rate = 0.0f;
     LOG_I(TAG, "Pump %d initialized", id);
+    delay_ms(50);
     return PUMP_ERROR_NONE;
 }
 
@@ -26,6 +27,7 @@ pump_err_code_t pump_set_state(pump_t *pump, pump_state_t state) {
     LOG_I(TAG, "Pump %d state set to %d", pump->id, state);
     temp_value_decrease();
     moisture_value_increase();
+    delay_ms(50);
     return PUMP_ERROR_NONE;
 }
 
@@ -34,6 +36,7 @@ pump_state_t pump_get_state(const pump_t *pump) {
         LOG_E(TAG, "Pump pointer is NULL");
         return PUMP_STATE_ERROR;
     }
+    delay_ms(50);
     return pump->state;
 }
 
@@ -44,6 +47,7 @@ pump_err_code_t pump_set_flow_rate(pump_t *pump, float flow_rate) {
     }
     pump->flow_rate = flow_rate;
     LOG_I(TAG, "Pump %d flow rate set to %.2f L/min", pump->id, flow_rate);
+    delay_ms(50);
     return PUMP_ERROR_NONE;
 }
 
@@ -52,5 +56,6 @@ float pump_get_flow_rate(const pump_t *pump) {
         LOG_E(TAG, "Pump pointer is NULL");
         return (-1.0f);
     }
+    delay_ms(50);
     return pump->flow_rate;
 }

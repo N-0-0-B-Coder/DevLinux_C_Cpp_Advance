@@ -17,6 +17,7 @@ led_err_code_t led_init(uint8_t led_pin) {
         return LED_ERROR;
     }
     LOG_I(TAG, "LED initialized on pin %d", led_pin);
+    delay_ms(50);
     return LED_ERROR_NONE;
 }
 
@@ -29,6 +30,7 @@ led_err_code_t led_on(uint8_t led_pin) {
         return LED_ERROR;
     }
     LOG_I(TAG, "LED on pin %d turned ON", led_pin);
+    delay_ms(50);
     return LED_ERROR_NONE;
 }
 
@@ -41,6 +43,7 @@ led_err_code_t led_off(uint8_t led_pin) {
         return LED_ERROR;
     }
     LOG_I(TAG, "LED on pin %d turned OFF", led_pin);
+    delay_ms(50);
     return LED_ERROR_NONE;
 }
 
@@ -51,6 +54,7 @@ bool is_led_on(uint8_t led_pin) {
         LOG_E(TAG, "Failed to read LED state on pin %d", led_pin);
         return false;
     }
+    delay_ms(50);
     return state;
 }
 
@@ -68,6 +72,7 @@ led_err_code_t led_toggle(uint8_t led_pin) {
         return LED_ERROR;
     }
     LOG_I(TAG, "LED on pin %d toggled to %s", led_pin, ret ? "ON" : "OFF");
+    delay_ms(50);
     return LED_ERROR_NONE;
 }
 
@@ -81,5 +86,6 @@ led_err_code_t led_blink(uint8_t led_pin, uint16_t interval_ms, uint8_t times) {
         req.tv_nsec = (interval_ms % 1000) * 1000000L;
         nanosleep(&req, (struct timespec *)NULL);
     }
+    delay_ms(50);
     return LED_ERROR_NONE;
 }

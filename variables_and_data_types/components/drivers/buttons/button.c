@@ -17,6 +17,7 @@ button_err_t button_init(uint8_t button_pin) {
         return BUTTON_ERROR_INIT_FAIL;
     }
     LOG_I(TAG, "Button initialized on pin %d", button_pin);
+    delay_ms(50);
     return BUTTON_ERROR_NONE;
 }
 
@@ -26,6 +27,7 @@ button_state_t button_get_state(uint8_t button_pin) {
         LOG_E(TAG, "Error reading button state on pin %d", button_pin);
         return BUTTON_STATE_RELEASED; // Default to released on error
     }
+    delay_ms(50);
     return gpio_state == GPIO_STATE_HIGH ? BUTTON_STATE_PRESSED : BUTTON_STATE_RELEASED;
 }
 
@@ -37,5 +39,6 @@ button_err_t button_set_state(uint8_t button_pin, button_state_t state) {
         return BUTTON_ERROR_FAIL;
     }
     LOG_I(TAG, "Button state set on pin %d to %s", button_pin, state == BUTTON_STATE_PRESSED ? "PRESSED" : "RELEASED");
+    delay_ms(50);
     return BUTTON_ERROR_NONE;
 }
