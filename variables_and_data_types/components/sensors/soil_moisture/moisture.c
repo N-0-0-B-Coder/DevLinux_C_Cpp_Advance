@@ -4,7 +4,7 @@ static const char *TAG = "MOISTURE_SENSOR";
 static float moisture_simulated_value = 100.0f;
 
 void moisture_value_increase(void) {
-    float random_increase_value = 2.0f + ((float)rand() / (float)RAND_MAX) * (15.0f - 2.0f);
+    float random_increase_value = 5.0f + ((float)rand() / (float)RAND_MAX) * (20.0f - 5.0f);
     moisture_simulated_value += random_increase_value;
     if (moisture_simulated_value > 100.0f) {
         moisture_simulated_value = 100.0f; // Cap at 100 %
