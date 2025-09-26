@@ -43,7 +43,6 @@ void system_state_init(system_state_t *state, system_mode_t mode) {
     state->pump_started_at_s = 0U;
     state->pump_locked_at_s = 0U;
     state->current_status = NORMAL;
-    state->previous_status = NORMAL;
     state->last_temperature_c = 0.0f;
     state->last_moisture_percent = 0.0f;
 
@@ -69,7 +68,7 @@ int init_system(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_sensor, 
 
     // Initialize Pumps
     if (pump_init(pump, 1, PUMP_PIN) != PUMP_ERROR_NONE) goto error;
-    pump_set_flow_rate(pump, 1.5f); // Set flow rate to 1.5 L/min
+    if (pump_set_flow_rate(pump, PUMP_RUN_FLOW_RATE) != PUMP_ERROR_NONE) goto error;
 
     LOG_I(TAG, "Pump initialized");
 

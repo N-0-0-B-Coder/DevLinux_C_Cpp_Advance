@@ -3,8 +3,8 @@
 static const char *TAG = "TEMPERATURE_SENSOR";
 static float temperature_simulated_value = 25.0f;
 
-void temp_value_decrease(void) {
-    float random_decrease_value = 5.0f + ((float)rand() / (float)RAND_MAX) * (20.0f - 5.0f);
+void temp_value_decrease(float pump_rate) {
+    float random_decrease_value = (2.5f + ((float)rand() / (float)RAND_MAX) * (15.0f - 2.5f)) * (pump_rate/5.0f);
     temperature_simulated_value -= random_decrease_value;
     if (temperature_simulated_value < 25.0f) {
         temperature_simulated_value = 25.0f; // Cap at 25 C

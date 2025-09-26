@@ -45,8 +45,8 @@ pump_err_code_t pump_set_state(pump_t *pump, pump_state_t state) {
 
     if (state == PUMP_STATE_ON) {
         gpio_set(pump->control_pin, GPIO_STATE_HIGH);
-        temp_value_decrease();
-        moisture_value_increase();
+        temp_value_decrease(pump->flow_rate);
+        moisture_value_increase(pump->flow_rate);
     } else if (state == PUMP_STATE_OFF) {
         gpio_set(pump->control_pin, GPIO_STATE_LOW);
     } else {
@@ -72,6 +72,11 @@ pump_err_code_t pump_set_flow_rate(pump_t *pump, float flow_rate) {
         LOG_E(TAG, "Pump pointer is NULL");
         return PUMP_ERROR_NULL_ARG;
     }
+    if (flow_rate < PUMP_MIN_FLOW_RATE || flow_rate > PUMP_MAX_FLOW_RATE) {
+        LOG_E(TAG, "Pump %d flow rate %.2f L/min out of range (%.2f - %.2f L/min)", pump->id, flow_rate, PUMP_MIN_FLOW_RATE, PUMP_MAX_FLOW_RATE);
+        return PUMP_ERROR;
+    }
+
     pump->flow_rate = flow_rate;
     LOG_I(TAG, "Pump %d flow rate set to %.2f L/min", pump->id, flow_rate);
     delay_ms(50);

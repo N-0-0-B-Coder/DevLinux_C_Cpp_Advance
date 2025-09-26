@@ -87,7 +87,6 @@ void auto_mode_run(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_senso
         if (state->current_status == WATERING) {
             // Continue watering
         } else {
-            state->previous_status = state->current_status;
             state->current_status = MOISTURE_ALERT;
         }
     }
@@ -95,7 +94,6 @@ void auto_mode_run(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_senso
         if (state->current_status == WATERING) {
             // Continue watering
         } else {
-            state->previous_status = state->current_status;
             state->current_status = TEMP_ALERT;
         }
     }
@@ -123,13 +121,12 @@ void auto_mode_run(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_senso
     // Handle watering state
     if (state->current_status == WATERING) {
         bool duration_elapsed = (now - state->pump_started_at_s) >= config->max_watering_duration_s;
-        bool moisture_recovered = ((moisture >= config->moisture_min_percent) && (moisture <= config->moisture_max_percent));
+        bool moisture_recovered = moisture >= DEFAULT_MOISTURE_GOOD_PERCENT;
         bool moisture_too_high = (moisture > config->moisture_max_percent);
         bool temperature_recovered = (temperature <= config->max_temperature_c);
 
         if (moisture_too_high) {
             LOG_W(TAG, "Moisture %.2f%% above %.2f%%", moisture, config->moisture_max_percent);
-            state->previous_status = state->current_status;
             state->current_status = NORMAL;
             if (pump_set_state(pump, PUMP_STATE_OFF) == PUMP_ERROR_NONE) {
                 LOG_I(TAG, "Auto watering stopped (moisture too high)");
@@ -140,7 +137,6 @@ void auto_mode_run(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_senso
         } else if (duration_elapsed) {
             LOG_I(TAG, "Auto watering stopped (max duration reached)");
             if (pump_set_state(pump, PUMP_STATE_OFF) == PUMP_ERROR_NONE) {
-                state->previous_status = state->current_status;
                 state->current_status = NORMAL;
             } else {
                 LOG_E(TAG, "Failed to stop pump after auto watering");
@@ -149,14 +145,8 @@ void auto_mode_run(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_senso
             state->pump_locked = true;
             state->pump_locked_at_s = now;
         } else if (moisture_recovered && temperature_recovered) {
-            if (state->previous_status == MOISTURE_ALERT) {
-                LOG_I(TAG, "Auto watering stopped (moisture %.2f%% >= %.2f%%)", moisture, config->moisture_min_percent);
-            }
-            if (state->previous_status == TEMP_ALERT) {
-                LOG_I(TAG, "Auto watering stopped (temperature %.2f C <= %.2f C)", temperature, config->max_temperature_c);
-            }
+            LOG_I(TAG, "Auto watering stopped (conditions recovered)");
             if (pump_set_state(pump, PUMP_STATE_OFF) == PUMP_ERROR_NONE) {
-                state->previous_status = state->current_status;
                 state->current_status = NORMAL;
             } else {
                 LOG_E(TAG, "Failed to stop pump after auto watering");
@@ -185,7 +175,6 @@ void auto_mode_run(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_senso
                 LOG_W(TAG, "Temperature %.2f C above %.2f C - Pump ON", temperature, config->max_temperature_c);
             }
             if (pump_set_state(pump, PUMP_STATE_ON) == PUMP_ERROR_NONE) {
-                state->previous_status = state->current_status;
                 state->current_status = WATERING;
                 state->pump_started_at_s = now;
             } else {

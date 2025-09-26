@@ -41,7 +41,7 @@ moisture_err_code_t moisture_sensor_init(moisture_sensor_t *sensor, gpio_num_t d
  */
 moisture_err_code_t moisture_sensor_read(moisture_sensor_t *sensor, float *moisture);
 
-void moisture_value_increase(void);
+void moisture_value_increase(float pump_rate);
 
 #ifdef __cplusplus
 }

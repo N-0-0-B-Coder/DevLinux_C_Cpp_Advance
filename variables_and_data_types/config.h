@@ -29,15 +29,17 @@ extern "C" {
 #define SENSOR_READ_INTERVAL_MS     5000
 
 // Pump Configuration
-#define PUMP_COOLDOWN_S             10 // seconds
+#define PUMP_COOLDOWN_S             10
 #define PUMP_MIN_FLOW_RATE          0.5f // liters per minute
 #define PUMP_MAX_FLOW_RATE          5.0f // liters per minute
+#define PUMP_RUN_FLOW_RATE          4.5f // liters per minute
 
 // Default Auto/Manual Mode
 #define DEFAULT_MOISTURE_MIN_PERCENT        25.0f
 #define DEFAULT_MOISTURE_MAX_PERCENT        80.0f
+#define DEFAULT_MOISTURE_GOOD_PERCENT       50.0f
 #define DEFAULT_MAX_TEMPERATURE_C           50.0f
-#define DEFAULT_MAX_WATERING_DURATION_S     30
+#define DEFAULT_MAX_WATERING_DURATION_S     15
 #define DEFAULT_MANUAL_WATERING_DURATION_S  20
 
 typedef enum {
@@ -69,7 +71,6 @@ typedef struct {
     float last_temperature_c;
     float last_moisture_percent;
     system_status_t current_status;
-    system_status_t previous_status;
     bool pump_locked;
     uint32_t pump_started_at_s;
     uint32_t pump_locked_at_s;

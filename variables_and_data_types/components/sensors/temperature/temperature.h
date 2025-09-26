@@ -41,7 +41,7 @@ temp_sensor_status_t temp_sensor_init(temp_sensor_t *sensor, gpio_num_t data_pin
  */
 temp_sensor_status_t temp_sensor_read(temp_sensor_t *sensor, float *temperature);
 
-void temp_value_decrease(void);
+void temp_value_decrease(float pump_rate);
 
 #ifdef __cplusplus
 }
