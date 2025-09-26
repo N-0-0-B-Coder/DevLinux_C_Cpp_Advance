@@ -4,7 +4,7 @@ static const char *TAG = "TEMPERATURE_SENSOR";
 static float temperature_simulated_value = 30.0f;
 
 void temp_value_decrease(void) {
-    float random_decrease_value = 2.0f + ((float)rand() / (float)RAND_MAX) * (15.0f - 2.0f);
+    float random_decrease_value = 2.0f + ((float)rand() / (float)RAND_MAX) * (20.0f - 2.0f);
     temperature_simulated_value -= random_decrease_value;
     if (temperature_simulated_value < 0.0f) {
         temperature_simulated_value = 0.0f; // Cap at 0 C
@@ -42,7 +42,7 @@ temp_sensor_status_t temp_sensor_read(temp_sensor_t *sensor, float *temperature)
         return TEMPERATURE_ERROR;
     }
     // Simulate sensor value change
-    float random_increase_value = 0.5f + ((float)rand() / (float)RAND_MAX) * (15.0f - 0.5f);
+    float random_increase_value = 0.5f + ((float)rand() / (float)RAND_MAX) * (7.0f - 0.5f);
     // Simulate reading from the sensor
     temperature_simulated_value += random_increase_value;
     sensor->last_value = temperature_simulated_value;
