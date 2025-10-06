@@ -21,6 +21,14 @@ extern "C" {
 #include "leds/led.h"
 #include "buttons/button.h"
 
+/**
+ * @brief Run the automatic mode logic
+ * 
+ * @param temp_sensor [in, out] Pointer to temperature sensor structure
+ * @param moisture_sensor [in, out] Pointer to moisture sensor structure
+ * 
+ * @param pump [in, out] Pointer to pump structure
+ */
 void auto_mode_run(temp_sensor_t *temp_sensor, moisture_sensor_t *moisture_sensor, pump_t *pump);
 
 

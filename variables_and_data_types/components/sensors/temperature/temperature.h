@@ -28,6 +28,7 @@ typedef struct {
  * 
  * @param sensor [in,out] Pointer to the temperature sensor structure
  * @param data_pin [in] GPIO pin connected to the sensor data line
+ * 
  * @return temp_sensor_status_t 
  */
 temp_sensor_status_t temp_sensor_init(temp_sensor_t *sensor, gpio_num_t data_pin);
@@ -37,10 +38,16 @@ temp_sensor_status_t temp_sensor_init(temp_sensor_t *sensor, gpio_num_t data_pin
  * 
  * @param sensor [in, out] Pointer to the temperature sensor structure
  * @param temperature [out] Pointer to store the read temperature value
- * @return temp_sensor_status_t 
+ * 
+ * @return temp_sensor_status_t 0 if successful, error code otherwise
  */
 temp_sensor_status_t temp_sensor_read(temp_sensor_t *sensor, float *temperature);
 
+/**
+ * @brief Simulate decrease in temperature value based on pump rate
+ * 
+ * @param pump_rate [in] The rate at which the pump is affecting temperature
+ */
 void temp_value_decrease(float pump_rate);
 
 #ifdef __cplusplus

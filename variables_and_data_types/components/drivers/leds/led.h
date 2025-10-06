@@ -24,7 +24,7 @@ extern "C" {
 typedef enum {
     LED_ERROR = -1,
     LED_ERROR_NONE
-}led_err_code_t;
+} led_err_code_t;
 
 /**
  * @brief Initialize the LED on the specified pin
@@ -39,6 +39,8 @@ led_err_code_t led_init(uint8_t led_pin);
  * @brief Turn the LED on
  * 
  * @param led_pin [in] The GPIO pin number where the LED is connected
+ * 
+ * @return err_code_t 0 if successful, error code otherwise
  */
 led_err_code_t led_on(uint8_t led_pin);
 
@@ -46,6 +48,8 @@ led_err_code_t led_on(uint8_t led_pin);
  * @brief Turn the LED off
  * 
  * @param led_pin [in] The GPIO pin number where the LED is connected
+ * 
+ * @return err_code_t 0 if successful, error code otherwise
  */
 led_err_code_t led_off(uint8_t led_pin);
 
@@ -61,6 +65,8 @@ bool is_led_on(uint8_t led_pin);
  * @brief Toggle the LED state
  * 
  * @param led_pin [in] The GPIO pin number where the LED is connected
+ * 
+ * @return err_code_t 0 if successful, error code otherwise
  */
 led_err_code_t led_toggle(uint8_t led_pin);
 

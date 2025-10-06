@@ -22,7 +22,7 @@ typedef enum {
     PUMP_ERROR = -2,
     PUMP_ERROR_NULL_ARG,
     PUMP_ERROR_NONE
-}pump_err_code_t;
+} pump_err_code_t;
 
 typedef struct {
     uint8_t id;
@@ -37,7 +37,8 @@ typedef struct {
  * @param pump [in, out] Pointer to pump structure
  * @param id [in] Pump ID
  * @param control_pin [in] GPIO pin used to control the pump
- * @return pump_err_code_t 
+ * 
+ * @return pump_err_code_t 0 if successful, error code otherwise
  */
 pump_err_code_t pump_init(pump_t *pump, uint8_t id, gpio_num_t control_pin);
 
@@ -46,7 +47,8 @@ pump_err_code_t pump_init(pump_t *pump, uint8_t id, gpio_num_t control_pin);
  * 
  * @param pump [in, out] Pointer to pump structure
  * @param state [in] Desired pump state
- * @return pump_err_code_t 
+ * 
+ * @return pump_err_code_t 0 if successful, error code otherwise 
  */
 pump_err_code_t pump_set_state(pump_t *pump, pump_state_t state);
 
@@ -54,6 +56,7 @@ pump_err_code_t pump_set_state(pump_t *pump, pump_state_t state);
  * @brief Get the current pump state
  * 
  * @param pump [in] Pointer to pump structure
+ * 
  * @return pump_state_t Current pump state
  */
 pump_state_t pump_get_state(const pump_t *pump);
@@ -63,7 +66,8 @@ pump_state_t pump_get_state(const pump_t *pump);
  * 
  * @param pump [in, out] Pointer to pump structure
  * @param flow_rate [in] Desired flow rate in liters per minute
- * @return pump_err_code_t 
+ * 
+ * @return pump_err_code_t 0 if successful, error code otherwise
  */
 pump_err_code_t pump_set_flow_rate(pump_t *pump, float flow_rate);
 
@@ -71,6 +75,7 @@ pump_err_code_t pump_set_flow_rate(pump_t *pump, float flow_rate);
  * @brief Get the current pump flow rate
  * 
  * @param pump [in] Pointer to pump structure
+ * 
  * @return float Current flow rate in liters per minute
  */
 float pump_get_flow_rate(const pump_t *pump);

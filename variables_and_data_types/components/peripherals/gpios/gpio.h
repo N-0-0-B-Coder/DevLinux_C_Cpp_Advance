@@ -26,7 +26,7 @@ typedef enum {
 
 
 	GPIO_MAX
-}gpio_num_t;
+} gpio_num_t;
 
 /**
  * @brief GPIO Configuration Structure
@@ -37,7 +37,7 @@ typedef enum {
 	GPIO_OUTPUT,
 	GPIO_ALTERNATE,
 	GPIO_ANALOG
-}gpio_mode_t;
+} gpio_mode_t;
 
 /**
  * @brief GPIO Output Type Enumeration
@@ -46,7 +46,7 @@ typedef enum {
 typedef enum {
 	GPIO_PUSH_PULL = 0,
 	GPIO_OPEN_DRAIN
-}gpio_output_type_t;
+} gpio_output_type_t;
 
 /**
  * @brief GPIO Speed Enumeration
@@ -57,7 +57,7 @@ typedef enum {
 	GPIO_MEDIUM_SPEED,
 	GPIO_HIGH_SPEED,
 	GPIO_VERY_HIGH_SPEED
-}gpio_speed_t;
+} gpio_speed_t;
 
 /**
  * @brief GPIO Pull-Up/Pull-Down Enumeration
@@ -67,7 +67,7 @@ typedef enum {
 	GPIO_NO_PUPD = 0,
 	GPIO_PULL_UP,
 	GPIO_PULL_DOWN
-}gpio_pull_ud_t;
+} gpio_pull_ud_t;
 
 /**
  * @brief GPIO Error Enumeration
@@ -80,7 +80,7 @@ typedef enum {
 	GPIO_ERROR_NOT_INITIALIZED,
 	GPIO_ERROR_UNKNOWN,
 	GPIO_ERROR_NONE
-}gpio_err_t;
+} gpio_err_t;
 
 /**
  * @brief GPIO State Enumeration
@@ -90,7 +90,7 @@ typedef enum {
 	GPIO_STATE_ERROR = -1,
 	GPIO_STATE_LOW,
 	GPIO_STATE_HIGH
-}gpio_state_t;
+} gpio_state_t;
 
 /**
  * @brief GPIO Configuration Structure
@@ -102,7 +102,7 @@ typedef struct {
         uint8_t speed:2;
         uint8_t pull_ud:2;
         uint8_t reversed:1;
-}gpio_cfg_t;
+} gpio_cfg_t;
 
 /**
  * @brief GPIO Pin Structure
@@ -113,7 +113,7 @@ typedef struct {
 	gpio_num_t gpio;
 	gpio_state_t state;
 	gpio_cfg_t cfg;
-}gpio_t;
+} gpio_t;
 
 extern gpio_t gpio_table[8];
 

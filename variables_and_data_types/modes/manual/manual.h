@@ -13,6 +13,11 @@ extern "C" {
 #include "log/log.h"
 #include "pumps/pump.h"
 
+/**
+ * @brief Run the manual mode logic
+ * 
+ * @param pump [in, out] Pointer to pump structure
+ */
 void manual_mode_run(pump_t *pump);
 
 #ifdef __cplusplus
