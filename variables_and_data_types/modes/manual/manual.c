@@ -21,6 +21,7 @@ static void apply_led_pattern(bool green_on, bool yellow_on, bool red_on) {
     else {
         LOG_E(TAG, "Failed to update RED LED");
     }
+
     if (green_on && yellow_on) {
         if (led_blink(LED_YELLOW_PIN, 500, 3) == LED_ERROR_NONE) {
             LOG_I(TAG, "YELLOW LED BLINK");
@@ -88,6 +89,7 @@ void manual_mode_run(pump_t *pump) {
             update_leds(state);
             return;
         }
+
         state->current_status = NORMAL;
         state->pump_started_at_s = 0;
         state->pump_locked = true;
@@ -112,6 +114,7 @@ void manual_mode_run(pump_t *pump) {
                     LOG_E(TAG, "Failed to turn pump off while idle in manual mode");
                 }
             }
+            
             state->current_status = NORMAL;
         }
     }

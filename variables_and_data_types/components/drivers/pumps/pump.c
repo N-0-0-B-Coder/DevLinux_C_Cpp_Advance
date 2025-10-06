@@ -10,6 +10,7 @@ pump_err_code_t pump_init(pump_t *pump, uint8_t id, gpio_num_t control_pin) {
         LOG_E(TAG, "Pump pointer is NULL");
         return PUMP_ERROR_NULL_ARG;
     }
+
     pump->id = id;
     pump->control_pin = control_pin;
     pump->state = PUMP_STATE_OFF;
@@ -63,6 +64,7 @@ pump_state_t pump_get_state(const pump_t *pump) {
         LOG_E(TAG, "Pump pointer is NULL");
         return PUMP_STATE_ERROR;
     }
+
     delay_ms(50);
     return pump->state;
 }
@@ -72,6 +74,7 @@ pump_err_code_t pump_set_flow_rate(pump_t *pump, float flow_rate) {
         LOG_E(TAG, "Pump pointer is NULL");
         return PUMP_ERROR_NULL_ARG;
     }
+
     if (flow_rate < PUMP_MIN_FLOW_RATE || flow_rate > PUMP_MAX_FLOW_RATE) {
         LOG_E(TAG, "Pump %d flow rate %.2f L/min out of range (%.2f - %.2f L/min)", pump->id, flow_rate, PUMP_MIN_FLOW_RATE, PUMP_MAX_FLOW_RATE);
         return PUMP_ERROR;
@@ -79,6 +82,7 @@ pump_err_code_t pump_set_flow_rate(pump_t *pump, float flow_rate) {
 
     pump->flow_rate = flow_rate;
     LOG_I(TAG, "Pump %d flow rate set to %.2f L/min", pump->id, flow_rate);
+
     delay_ms(50);
     return PUMP_ERROR_NONE;
 }
@@ -88,6 +92,7 @@ float pump_get_flow_rate(const pump_t *pump) {
         LOG_E(TAG, "Pump pointer is NULL");
         return (-1.0f);
     }
+    
     delay_ms(50);
     return pump->flow_rate;
 }
